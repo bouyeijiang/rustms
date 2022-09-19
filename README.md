@@ -8,7 +8,7 @@
 提供新手快速参考学习。
 
 #### Software Architecture
-##### 后端:rust 1.60版本;actx-web 4.0;postgresql数据库;
+##### 后端:rust 1.60版本;actix-web 4.0;postgresql数据库;
 ##### 前端:angular 12;devui(ng-devui-admin)前端模板;
 
 #### Installation
