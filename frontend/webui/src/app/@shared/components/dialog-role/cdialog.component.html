@@ -1,0 +1,27 @@
+<div class="modal-cdialog-component">
+    <form dForm [layout]="layoutDirection" ngForm>
+      <d-form-item class="form-item-margin">
+        <d-form-label [required]="true" class="form-label">角色名称</d-form-label>
+        <d-form-control>
+            <input aria-label="role_name" [name]="'role_name'" dTextInput placeholder="" [(ngModel)]="formData.role_name" (ngModelChange)="onChanged()"/>
+        </d-form-control>
+      </d-form-item>
+          <d-form-item class="form-item-margin">
+            <d-form-label [required]="true" class="form-label">角色类型</d-form-label>
+            <d-form-control>
+                <d-select [filterKey]="'label'" [name]="'role_type'" [options]="roleoptions" [(ngModel)]="formData.roletypevalue" (ngModelChange)="roleChanged()"></d-select>
+            </d-form-control>
+          </d-form-item>
+          <d-form-item class="form-item-margin">
+            <d-form-label [required]="true" class="form-label">权限信息</d-form-label>
+            <d-form-control>
+              <textarea dTextarea name="detail" maxlength="1024" [disabled]="true" class="plan-desc" [(ngModel)]="formData.detail"></textarea>
+            </d-form-control>
+          </d-form-item>
+          <d-form-item class="form-item-margin">
+            <d-form-control>
+              <d-button bsStyle="primary" (btnClick)="configDialog('add','standard')">配置</d-button>
+            </d-form-control>
+          </d-form-item>
+   </form>
+  </div>

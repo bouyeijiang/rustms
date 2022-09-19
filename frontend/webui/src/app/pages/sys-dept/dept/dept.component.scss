@@ -1,0 +1,28 @@
+@import "~ng-devui/styles-var/devui-var.scss";
+@import "src/app/@shared/styles/common.scss";
+
+.da-content-card {
+    height: 300px;
+    padding: 24px;
+}
+.da-margin-bottom{
+    margin-bottom: 4px;
+}
+.margin-rigth{
+    margin-right: 4px;
+}
+.toolbar-left {
+    max-width: 180px;
+    margin-left: 12px;
+    float: left;
+}
+.toolbar-right {
+    max-width: 280px;
+    margin-right: 12px;
+    float: right;
+    display: inline-flex;
+}
+.table-toolbar {
+    display: flow-root;
+    margin-top: 8px;
+}

@@ -1,0 +1,22 @@
+<div class="modal-cdialog-component">
+    <form dForm [layout]="layoutDirection" ngForm>
+          <d-form-item class="form-item-margin">
+            <d-form-label [required]="true" class="form-label">上级部门</d-form-label>
+            <d-form-control>
+                <d-select [filterKey]="'label'" [name]="'parentvalue'" [options]="deptoptions" [(ngModel)]="formData.parentvalue"></d-select>
+            </d-form-control>
+          </d-form-item>
+          <d-form-item class="form-item-margin">
+            <d-form-label class="form-label">部门名称</d-form-label>
+            <d-form-control>
+                <input aria-label="dept" [name]="'dept'" dTextInput placeholder="" [(ngModel)]="formData.dept"/>
+            </d-form-control>
+          </d-form-item>
+          <d-form-item class="form-item-margin">
+            <d-form-label class="form-label">排序</d-form-label>
+            <d-form-control>
+              <d-input-number aria-label="dindex" [min]="min" [max]="max" size="sm"  [name]="'dindex'" [(ngModel)]="formData.dindex" class="input-number"></d-input-number>
+            </d-form-control>
+          </d-form-item>
+   </form>
+  </div>

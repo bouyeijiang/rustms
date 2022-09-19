@@ -1,0 +1,56 @@
+<div class="da-content-wrapper" style="margin-left: 40px">
+  <form dForm [layout]="layoutDirection" ngForm>
+      <d-form-item class="form-item-margin">
+          <d-form-label class="form-label">账户</d-form-label>
+          <d-form-control>
+              <input aria-label="uname" name="uname" dTextInput placeholder="账户必须唯一" [(ngModel)]="formData.uname"/>
+          </d-form-control>
+        </d-form-item>
+        <d-form-item class="form-item-margin">
+          <d-form-label [required]="true" class="form-label">手机号码</d-form-label>
+          <d-form-control>
+            <input aria-label="phone" name="phone" dTextInput placeholder="" [(ngModel)]="formData.phone"/>
+          </d-form-control>
+        </d-form-item>
+        <d-form-item class="form-item-margin">
+          <d-form-label [required]="true" class="form-label">密码</d-form-label>
+          <d-form-control>
+            <input aria-label="upwd" name="upwd" dTextInput placeholder="至少6位长度字符" [(ngModel)]="formData.upwd"/>
+          </d-form-control>
+        </d-form-item>
+        <d-form-item class="form-item-margin">
+          <d-form-label class="form-label">性别</d-form-label>
+          <d-form-control>
+            <d-select [filterKey]="'label'" [name]="'sex'" [options]="sexoptions" [(ngModel)]="formData.sex"></d-select>
+          </d-form-control>
+        </d-form-item>
+        <d-form-item class="form-item-margin">
+          <d-form-label class="form-label">账户类型</d-form-label>
+          <d-form-control>
+            <d-select [filterKey]="'label'" [name]="'utype'" [options]="utypeoptions" [(ngModel)]="formData.utype"></d-select>
+          </d-form-control>
+        </d-form-item>
+        <d-form-item class="form-item-margin">
+          <d-form-label class="form-label">部门</d-form-label>
+          <d-form-control>
+            <d-select [filterKey]="'label'" [name]="'dept'" [options]="deptoptions" [(ngModel)]="formData.dept"></d-select>
+          </d-form-control>
+        </d-form-item>
+        <d-form-item class="form-item-margin">
+          <d-form-label class="form-label">菜单角色</d-form-label>
+          <d-form-control>
+            <d-select [filterKey]="'label'" [name]="'menurole'" [options]="menuroleoptions" [(ngModel)]="formData.menurole"></d-select>
+          </d-form-control>
+        </d-form-item>
+        <d-form-item class="form-item-margin">
+          <d-form-label class="form-label">数据角色</d-form-label>
+          <d-form-control>
+            <d-select [filterKey]="'label'" [name]="'datarole'" [options]="dataroleoptions" [(ngModel)]="formData.datarole"></d-select>
+          </d-form-control>
+        </d-form-item>
+        <d-form-operation class="da-form-operation">
+          <d-button style="margin-right: 5px" (click)="onSave()">保存</d-button>
+        </d-form-operation>
+ </form>
+</div>
+

@@ -1,0 +1,40 @@
+<div class="modal-cdialog-component">
+    <form dForm [layout]="layoutDirection" ngForm>
+          <d-form-item class="form-item-margin">
+            <d-form-label class="form-label">上级菜单</d-form-label>
+            <d-form-control>
+              <input aria-label="parent" [name]="'parent'" disabled="true" dTextInput placeholder="" [value]="data.parent"/>
+            </d-form-control>
+          </d-form-item>
+          <d-form-item class="form-item-margin">
+            <d-form-label  [required]="true" class="form-label">菜单名称</d-form-label>
+            <d-form-control>
+                <input aria-label="menu_name" [name]="'menu_name'" dTextInput placeholder="" [(ngModel)]="formData.menu_name"/>
+            </d-form-control>
+          </d-form-item>
+          <d-form-item class="form-item-margin">
+            <d-form-label  [required]="true" class="form-label">菜单地址</d-form-label>
+            <d-form-control>
+                <input aria-label="menu_uri" [name]="'menu_uri'" dTextInput placeholder="" [(ngModel)]="formData.menu_uri"/>
+            </d-form-control>
+          </d-form-item>
+          <d-form-item class="form-item-margin">
+            <d-form-label class="form-label">菜单图标</d-form-label>
+            <d-form-control>
+                <input aria-label="icon" [name]="'icon'" dTextInput placeholder="" [(ngModel)]="formData.icon"/>
+            </d-form-control>
+          </d-form-item>
+          <d-form-item class="form-item-margin">
+            <d-form-label class="form-label">菜单类型</d-form-label>
+            <d-form-control>
+              <d-select [filterKey]="'label'" [name]="'menutypevalue'" [options]="menu_type_options" [(ngModel)]="formData.menutypevalue"></d-select>
+            </d-form-control>
+          </d-form-item>
+          <d-form-item class="form-item-margin">
+            <d-form-label class="form-label">排序</d-form-label>
+            <d-form-control>
+              <d-input-number aria-label="mindex" [min]="min" [max]="max" size="sm"  [name]="'mindex'" [(ngModel)]="formData.mindex" class="input-number"></d-input-number>
+            </d-form-control>
+          </d-form-item>
+   </form>
+  </div>

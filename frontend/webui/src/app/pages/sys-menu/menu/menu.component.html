@@ -1,0 +1,47 @@
+<div style="max-width: 800px;">
+  <div class="tree-title">
+    <h4>名称</h4>
+    <h4>信息</h4>
+  </div>
+  <div>
+    <d-operable-tree
+      #operableTree
+      [tree]="dataSource"
+      [checkable]="false"
+      [treeNodeIdKey]="'id'"
+      [treeNodeTitleKey]="'title'"
+      [treeNodeChildrenKey]="'children'"
+      [iconParentOpen]="iconParentOpen"
+      [iconParentClose]="iconParentClose"
+      [iconTemplatePosition]="'after-checkbox'"
+      [disableMouseEvent]="disableMouseEvent"
+      ngAfterViewInit="ngAfterViewInit()"
+    >
+      <ng-template #iconTemplate let-node="node">
+        <span class="{{ node?.data?.icon }}"></span>
+      </ng-template>
+      <ng-template #nodeTemplate let-node="node" let-completeNode="completeNode">
+        <span style="margin: 0 10px; cursor: pointer" (click)="activeNode(completeNode)">{{ node?.title }}</span>
+      </ng-template>
+      <ng-template #statusTemplate let-node="node">
+        <span class="status-position">{{node.data.originItem?.link}}</span>
+      </ng-template>
+      <ng-template #operatorTemplate let-optree let-node="node">
+        <span class="op-icons icon icon-delete" (click)="deleteNode($event, node)"></span>
+        <span
+          class="op-icons icon icon-more-operate"
+          dDropDown
+          dDropDownToggle
+          appendToBody
+          [trigger]="'hover'"
+          (toggleEvent)="onToggle($event, node)">
+
+          <ul dDropDownMenu class="devui-dropdown-menu devui-scrollbar" role="menu">
+            <li role="menuitem"><a class="devui-dropdown-item" (click)="addNode($event,node)">新增</a></li>
+            <li role="menuitem"><a class="devui-dropdown-item" (click)="editNode($event,node)">修改</a></li>
+          </ul>
+        </span>
+      </ng-template>
+    </d-operable-tree>
+  </div>
+</div>

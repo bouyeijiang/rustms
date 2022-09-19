@@ -1,0 +1,10 @@
+{
+    "listen": "0.0.0.0:8088",
+    "postgres": {
+        "ip": "localhost",
+        "port": 5432,
+        "user": "postgres",
+        "pwd": "1233456",
+        "database": "clms"
+    }
+}

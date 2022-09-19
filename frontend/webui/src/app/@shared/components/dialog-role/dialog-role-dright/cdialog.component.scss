@@ -1,0 +1,44 @@
+@import '~ng-devui/styles-var/devui-var.scss';
+
+:host ::ng-deep .icon.icon-collapse {
+  transform: rotateY(180deg);
+  display: inline-block;
+}
+
+.op-icons {
+  display: inline-block;
+  margin-left: 8px;
+  cursor: pointer;
+  color: #575d6c;
+  font-size: $devui-font-size-icon;
+}
+
+.op-status {
+  width: 12px;
+  height: 12px;
+  // border-radius: 50%;
+}
+
+.status-position {
+  position: absolute;
+  right: 8px;
+}
+
+:host ::ng-deep .devui-tree-node__content {
+  width: 100%;
+}
+
+.tree-title {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 24px;
+  padding-right: 16px;
+}
+
+.op-icons:focus {
+  outline: none;
+}
+
+// .devui-tree-node__edit {
+//   margin: 0 8px;
+// }

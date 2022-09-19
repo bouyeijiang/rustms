@@ -1,0 +1,25 @@
+<!-- <div class="da-content-banner">
+  <d-breadcrumb>
+    <d-breadcrumb-item
+      ><a routerLink="/">
+        {{ 'startUsing.breadcrumb.home' | translate }}
+      </a></d-breadcrumb-item
+    >
+    <d-breadcrumb-item>
+      {{ 'startUsing.breadcrumb.title' | translate }}
+    </d-breadcrumb-item>
+    <d-breadcrumb-item>
+      {{ 'startUsing.breadcrumb.sub' | translate }}
+    </d-breadcrumb-item>
+  </d-breadcrumb>
+</div> -->
+<div class="da-content-wrapper">
+  <da-layout-row [daGutter]="[24, 24]">
+    <da-col-item [daSpan]="24" [daXs]="24">
+      <div class="da-content-card">
+        <div class="da-content-title">用户统计</div>
+        <d-echarts [options]="options" height="18rem" class="da-historgram"></d-echarts>
+      </div>
+    </da-col-item>
+  </da-layout-row>
+</div>

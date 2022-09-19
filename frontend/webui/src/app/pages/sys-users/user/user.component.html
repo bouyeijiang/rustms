@@ -1,0 +1,67 @@
+<div class="table-toolbar">
+  <div class="col-md-5 toolbar-left">
+    <d-button (btnClick)="addRow()" class="da-margin-bottom">新增</d-button>
+  </div>
+  <div class="toolbar-right">
+    <div class="col-md-5 margin-rigth">
+      <input dTextInput autocomplete="off" name="uname" placeholder="账户" [(ngModel)]="formData.uname"/>
+    </div>
+    <div class="col-md-5">
+      <d-button  icon="icon-import" class="button-margrin" (click)="onQuery()">查询</d-button>
+    </div>
+   </div>
+  </div>
+
+<div class="da-content-wrapper">
+  <div class="list-content" dLoading>
+  <d-data-table
+  dLoading
+  [fixHeader]="true"
+  [tableWidthConfig]="tableWidthConfig"
+  [dataSource]="dataSource"
+  [scrollable]="true"
+  maxHeight="600px">
+  <thead dTableHead>
+    <tr dTableRow>
+      <th dHeadCell *ngFor="let col of dataTableHeader.columns"
+      [fixedRight]="col.fixedRight">{{ col.header }}</th>
+    </tr>
+  </thead>
+  <tbody dTableBody>
+    <ng-template let-rowItem="rowItem" let-rowIndex="rowIndex">
+      <tr dTableRow>
+        <td dTableCell *ngFor="let col of dataTableHeader.columns" [fixedRight]="col.fixedRight">
+          <div *ngIf="col.field === 'op';else op" class="btn-group over-flow-ellipsis">
+             <d-button icon="icon-edit" bsStyle="text-dark" title="edit" (click)="editRow(rowItem,rowIndex)"></d-button>
+             <d-button icon="icon-delete" bsStyle="text-dark" title="delete" (click)="deleteRow(rowItem,rowIndex)"></d-button>
+           </div>  
+           <ng-template #op>
+            <div [ngSwitch]="col.field">
+              <label *ngSwitchCase="'utype'">{{rowItem[col.field]===0?'一般账户':'管理账户'}}</label>
+              <label *ngSwitchCase="'status'">{{rowItem[col.field]===0?'正常':'停用'}}</label>
+              <label *ngSwitchDefault>{{rowItem[col.field]}}</label>
+            </div>        
+           </ng-template>    
+         </td>
+      </tr>
+    </ng-template>
+  </tbody>
+</d-data-table>
+</div>
+
+<div class="da-list-footer">
+  <d-pagination
+    [size]="'sm'"
+    [total]="pager.total"
+    [(pageSize)]="pager.pageSize"
+    [(pageIndex)]="pager.pageIndex"
+    [canViewTotal]="true"
+    [canChangePageSize]="true"
+    [canJumpPage]="true"
+    [maxItems]="5"
+    (pageIndexChange)="onPageChange($event)"
+    (pageSizeChange)="onSizeChange($event)"
+  >
+  </d-pagination>
+</div>
+</div>

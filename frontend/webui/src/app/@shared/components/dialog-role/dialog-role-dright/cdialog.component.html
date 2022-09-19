@@ -1,0 +1,29 @@
+<div style="max-width: 800px;">
+  <div class="tree-title">
+    <h4>名称</h4>
+  </div>
+  <div>
+    <d-operable-tree
+      #operableTree
+      [tree]="dataSource"
+      [treeNodeIdKey]="'id'"
+      [treeNodeTitleKey]="'title'"
+      [treeNodeChildrenKey]="'children'"
+      [iconParentOpen]="iconParentOpen"
+      [iconParentClose]="iconParentClose"
+      [iconTemplatePosition]="'after-checkbox'"
+      (nodeChecked)="onOperableNodeChecked($event)"
+      ngAfterViewInit="ngAfterViewInit()"
+    >
+      <!-- <ng-template #iconTemplate let-node="node">
+        <span class="{{ node?.data?.icon }}"></span>
+      </ng-template> -->
+      <ng-template #nodeTemplate let-node="node" let-completeNode="completeNode">
+        <span style="margin: 0 10px; cursor: pointer">{{ node?.title }}</span>
+      </ng-template>
+      <!-- <ng-template #statusTemplate let-node="node">
+        <span class="status-position">{{node.data.originItem?.dindex}}</span>
+      </ng-template> -->
+    </d-operable-tree>
+  </div>
+</div>
