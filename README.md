@@ -18,7 +18,7 @@
 3.  配置好postgresql数据库环境。
 4.  git https://gitee.com/bouyei/rustms.git 下载项目。
 5.  推荐使用vscode开发调试。
-6.  开发调试前端启动:ng serve(代理启动 ng server --proxy-config proxy.conf.json);后端启动cargo run,项目自动还原依赖。
+6.  开发调试前端启动:ng serve(代理启动 ng serve --proxy-config proxy.conf.json);后端启动cargo run,项目自动还原依赖。
 
 #### Instructions
 
@@ -28,6 +28,8 @@
 4.  在target/release文件夹里面找到conf文件夹(没有就创建)settings.json修改数据库配置和监听端口。
 5.  前端修改config/settings.ts的地址为"/"。
 6.  访问地址如:http://localhost:4200/index.html
+
+
 #### Preview Effect
 ##### 界面预览截图效果：
 
