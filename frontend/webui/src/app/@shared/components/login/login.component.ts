@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   language: string;
   waittingRt: any;
   tabItems: any;
-
+  islogining=false;
   i18nValues: any;
 
   formData = {
@@ -107,11 +107,16 @@ export class LoginComponent implements OnInit {
     });
 }
   onClick(tabId: string | number) {
+
     switch (tabId) {
       case 'tab1':
+        if(this.islogining)return;
+        this.islogining=true;
+
         this.waittingRt = this.loadingService.open();
         this.authService.login(this.formData.account, this.formData.pwd)
           .subscribe((res) => {
+            this.islogining=false;
             this.waittingRt.loadingInstance.close();
 
               if(res.code===200){
@@ -122,6 +127,7 @@ export class LoginComponent implements OnInit {
               }
             },
             (error) => {
+              this.islogining=false;
               console.log(error);
               this.waittingRt.loadingInstance.close();
               this.authService.logout();
@@ -153,7 +159,7 @@ export class LoginComponent implements OnInit {
   }
 
   onKeyUp(e: KeyboardEvent, tabId: string | number) {
-    if (e.keyCode === 13) {
+    if (e.key === 'Enter') {
       this.onClick(tabId);
     }
   }
