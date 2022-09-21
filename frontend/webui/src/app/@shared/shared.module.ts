@@ -40,7 +40,6 @@ import { NavbarComponent } from './components/header/navbar/navbar.component';
 import { DaGridModule} from './layouts/da-grid';
 import { HeaderLogoComponent } from './components/header/header-logo/header-logo.component';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
-import { RegisterComponent } from './components/register/register.component';
 import { DialogDeptComponent } from './components/dialog-dept/cdialog.component';
 import { DialogUserComponent } from './components/dialog-user/cdialog.component';
 import { DialogMenuComponent } from './components/dialog-menu/cdialog.component';
@@ -84,7 +83,6 @@ const COMPONENTS = [
     HeaderOperationComponent,
     HeaderLogoComponent,
     SideMenuComponent,
-    RegisterComponent,
     DialogDeptComponent,
     DialogUserComponent,
     DialogMenuComponent,

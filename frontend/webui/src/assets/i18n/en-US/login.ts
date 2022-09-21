@@ -1,10 +1,10 @@
 export default {
   loginPage: {
-    coperation: 'CLMS',
+    coperation: 'rustms',
     loginWays: {
       account: 'Account Login',
     },
-    submit: 'Submit',
+    submit: 'login',
     userName: 'Username',
     password: 'Password',
     noticeMessage: {

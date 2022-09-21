@@ -4,8 +4,11 @@ use crate::controller::sys_dept::*;
 use crate::controller::sys_menu::*;
 use crate::controller::sys_role::*;
 use actix_files as fs;
-use actix_web::web;
+use actix_web::{web,get,Result};
+use actix_files::NamedFile;
+use std::path::PathBuf;
 
+//配置接口地址路由方法
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(do_login)
         .service(get_user_list)
@@ -36,8 +39,16 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         .service(delete_role_byid)
         .service(get_rigth_byid)
         .service(get_role_byid)
+        .service(index)
 
         .service(fs::Files::new("/statics", "resources/statics/").prefer_utf8(true))
         .service(fs::Files::new("/assets", "resources/pages/assets/").prefer_utf8(true))
         .service(fs::Files::new("/", "resources/pages/").prefer_utf8(true));
+}
+
+//配置静态页面的默认首页
+#[get("/")]
+pub async fn index()->Result<NamedFile>{
+    let path=PathBuf::from("resources/pages/index.html");
+    Ok(NamedFile::open(path)?)
 }

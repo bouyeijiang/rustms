@@ -19,7 +19,7 @@ impl LayerMenu{
         let list = SysMenu::from_vec(rt);
  
         if list.len()==0{
-            return DResult{code:0,value: TreeNodeMenu::new(SysMenu::new("系统菜单"))};
+            return DResult::failure(TreeNodeMenu::new(SysMenu::new("系统菜单")));
         }
 
         let root=list.get(0).unwrap();
@@ -29,7 +29,7 @@ impl LayerMenu{
         TreeNodeMenu::from_vec(&mut tree,&list);
        
         let r=*tree.unwrap();
-        DResult{code:200,value:r}
+        DResult::success(r)
     }
 
     //修改或更新部门
@@ -38,7 +38,7 @@ impl LayerMenu{
 
         if act == "edit" {
             if id.len()<=0{
-                return DResult{code:0,value:String::from("编号不存在")};
+                return DResult::empty(String::from("编号不存在"));
             }
             
             let exist_str=format!("select count(*) from sys_menu where id!='{}' and menu_name='{}')",id,menu_name);
@@ -53,7 +53,7 @@ impl LayerMenu{
             };
 
             if is_in{
-                return DResult{code:1,value:String::from("菜单名称已经存在")};
+                return DResult::failure(String::from("菜单名称已经存在"));
             }
 
             let command_text = format!(
@@ -65,13 +65,14 @@ impl LayerMenu{
             match rt {
                 Err(e) => {
                     println!("add failed {}", e.to_string());
-                    DResult{code:0,value:String::from("修改失败")}
+                    DResult::failure(String::from("修改失败"))
                 }
                 Ok(rt) => {
                     if rt > 0 {
-                          DResult{code:200,value:String::from("修改成功")}
+                          DResult::success(String::from("修改成功"))
+                    }else {
+                         DResult::failure(String::from("修改失败"))
                     }
-                     else { DResult{code:0,value:String::from("修改失败")}}
                 }
             }
         }else{
@@ -86,7 +87,7 @@ impl LayerMenu{
                 _=>false,
             };
             if is_in{
-                return DResult{code:1,value:String::from("菜单名称已经存在")};
+                return DResult::failure(String::from("菜单名称已经存在"));
             }
 
             let command_text = format!("insert into sys_menu(menu_name,menu_uri,pid,menu_type,icon)
@@ -95,13 +96,14 @@ impl LayerMenu{
             match rt {
                 Err(e) => {
                     println!("add failed {}", e.to_string());
-                    DResult{code:1,value:String::from("添加失败")}
+                    DResult::failure(String::from("添加失败"))
                 }
                 Ok(rt) => {
                     if rt > 0 {
-                         DResult{code:200,value:String::from("添加成功")}
+                         DResult::success(String::from("添加成功"))
+                    }else { 
+                        DResult::failure(String::from("添加失败"))
                     }
-                     else { DResult{code:1,value:String::from("添加失败")}}
                 }
             }
         }
@@ -135,15 +137,9 @@ impl LayerMenu{
         };
 
         if is_deleted{
-            DResult{
-                code:200,
-                value:String::from("删除成功")
-            }
+            DResult::success(String::from("删除成功"))
         }else{
-            DResult{
-                code:0,
-                value:String::from("删除失败")
-            }
+            DResult::failure(String::from("删除失败"))
         }
     }
 
@@ -171,7 +167,7 @@ impl LayerMenu{
         let list = SysMenu::from_vec(rt);
  
         if list.len()==0{
-            return DResult{code:0,value: TreeNodeMenu::new(SysMenu::new("系统菜单"))};
+            return DResult::empty(TreeNodeMenu::new(SysMenu::new("系统菜单")))
         }
 
         let root=list.get(0).unwrap();
@@ -180,6 +176,6 @@ impl LayerMenu{
         TreeNodeMenu::from_vec(&mut tree,&list);
        
         let r=*tree.unwrap();
-        DResult{code:200,value:r}
+        DResult::success(r)
     }
 }

@@ -32,23 +32,12 @@ impl LayerDept{
             let rt = PgLink::db_query(&mut cfg, &command_text).await.unwrap();
             let list = SysDept::from_vec(rt);
 
-           return PResult {
-                value: list,
-                total:_total,
-                message:String::from(""),
-                code: 200,
-            };
+           return PResult::success(list, _total);
         }
 
         let empty:Vec<SysDept>=Vec::new();
 
-        PResult {
-            value: empty,
-            code: 0,
-            message:String::from("无数据"),
-            total: 0,
-        }
-
+        PResult::failure(empty, String::from("无数据"))
     }
 
     pub async fn get_list_by_parent(parentid:&str)->Vec<SysDept>{
@@ -79,7 +68,7 @@ impl LayerDept{
         let list = SysDept::from_vec(rt);
  
         if list.len()==0{
-            return DResult{code:0,value: TreeNodeDept::new(SysDept::new("总部"))};
+            return DResult::empty(TreeNodeDept::new(SysDept::new("总部")));
         }
 
         let root=list.get(0).unwrap();
@@ -88,7 +77,7 @@ impl LayerDept{
         TreeNodeDept::from_vec(&mut tree,&list);
        
         let r=*tree.unwrap();
-        DResult{code:200,value:r}
+        DResult::success(r)
     }
 
     //修改或更新部门
@@ -97,7 +86,7 @@ impl LayerDept{
 
         if act == "edit" {
             if id.len()<=0{
-                return DResult{code:0,value:String::from("编号不存在")};
+                return DResult::empty(String::from("编号不存在"));
             }
             
             let exist_str=format!("select count(*) from sys_dept where id!='{1}' and dept='{}')",id,dept);
@@ -112,7 +101,7 @@ impl LayerDept{
             };
 
             if is_in{
-                return DResult{code:1,value:String::from("部门名称已经存在")};
+                return DResult::failure(String::from("部门名称已经存在"));
             }
 
             let command_text = format!(
@@ -124,13 +113,15 @@ impl LayerDept{
             match rt {
                 Err(e) => {
                     println!("add failed {}", e.to_string());
-                    DResult{code:0,value:String::from("修改失败")}
+                    DResult::failure(String::from("修改失败"))
                 }
                 Ok(rt) => {
                     if rt > 0 {
-                          DResult{code:200,value:String::from("修改成功")}
+                          DResult::success(String::from("修改成功"))
                     }
-                     else { DResult{code:0,value:String::from("修改失败")}}
+                     else {
+                         DResult::failure(String::from("修改失败"))
+                    }
                 }
             }
         }else{
@@ -145,7 +136,7 @@ impl LayerDept{
                 _=>false,
             };
             if is_in{
-                return DResult{code:1,value:String::from("部门名称已经存在")};
+                return DResult::failure(String::from("部门名称已经存在"));
             }
 
             let command_text = format!("insert into sys_dept(dept,pid,dindex) values('{}','{}',{})",dept,pid,dindex);
@@ -153,13 +144,15 @@ impl LayerDept{
             match rt {
                 Err(e) => {
                     println!("add failed {}", e.to_string());
-                    DResult{code:1,value:String::from("添加失败")}
+                    DResult::failure(String::from("添加失败"))
                 }
                 Ok(rt) => {
                     if rt > 0 {
-                         DResult{code:200,value:String::from("添加成功")}
+                         DResult::success(String::from("添加成功"))
                     }
-                     else { DResult{code:1,value:String::from("添加失败")}}
+                     else {
+                         DResult::failure(String::from("添加失败"))
+                    }
                 }
             }
         }
@@ -195,15 +188,9 @@ impl LayerDept{
         };
 
         if is_deleted{
-            DResult{
-                code:200,
-                value:String::from("删除成功")
-            }
+            DResult::success(String::from("删除成功"))
         }else{
-            DResult{
-                code:0,
-                value:String::from("删除失败")
-            }
+            DResult::failure(String::from("删除失败"))
         }
     }
 }

@@ -45,13 +45,7 @@ impl LayerUser {
  
         if _total==0{
             let empty:Vec<SysUser>=Vec::new();
-
-           return PResult {
-                value: empty,
-                code: 0,
-                message:String::from("无数据"),
-                total: 0,
-            };
+            return PResult::failure(empty, String::from("无数据"));
         }
 
         let p = WebUtil::get_page_from_query(&data);
@@ -74,12 +68,7 @@ impl LayerUser {
         let rt = PgLink::db_query(&mut cfg, &mut command_text).await.unwrap();
         let list = SysUser::from_vec(rt);
 
-        return PResult {
-            value: list,
-            total:_total,
-            message:String::from(""),
-            code: 200,
-        };
+        return PResult::success(list, _total);
     }
   
     pub async fn get_portal_pie()->DResult<Vec<DtoPortalPie>>{
@@ -96,10 +85,7 @@ impl LayerUser {
 
         let rt = PgLink::db_query(&mut cfg, &mut command_text).await.unwrap();
         let list = DtoPortalPie::from_vec(rt);
-        DResult{
-            code:200,
-            value:list
-        }
+        DResult::success(list)
     }
 
     //用户登录
@@ -160,9 +146,9 @@ impl LayerUser {
         let _pwd=  CryptoUtil::to_md5(&upwd).to_uppercase();
 
         if uname.len()==0{
-            return DResult{code:0,value:String::from("账户不能为空")};
+            return DResult::failure(String::from("账户不能为空"));
         }else if dept_id.len()==0{
-            return DResult{code:0,value:String::from("部门不能为空")};
+            return DResult::failure( String::from("部门不能为空"));
         }
 
         if phone.len()==0{
@@ -174,7 +160,7 @@ impl LayerUser {
         if act == "edit" {
             let id=data.get("id").unwrap_or(&def);
             if id.len()<=0{
-                return DResult{code:0,value:String::from("编号不能为空")};
+                return DResult::failure(String::from("编号不能为空"));
             }
             
             let exist_str=format!("select count(*) from sys_user where utype='{}' and id!='{}' and (uname='{}' or phone='{}')",utype,id,uname,phone);
@@ -189,7 +175,7 @@ impl LayerUser {
             };
 
             if is_in{
-                return DResult{code:0,value:String::from("该账户或手机号已经存在")};
+                return DResult::failure(String::from("该账户或手机号已经存在"));
             }
 
             let command_text = format!(
@@ -202,11 +188,13 @@ impl LayerUser {
             match rt {
                 Err(e) => {
                     println!("add failed {}", e.to_string());
-                    DResult{code:-1,value:String::from("修改异常")}
+                    DResult::error(String::from("修改异常"))
                 }
                 Ok(rt) => {
-                    if rt > 0 {  DResult{code:200,value:String::from("修改成功")}
-                    } else {  DResult{code:0,value:String::from("修改失败")}}
+                    if rt > 0 {  DResult::success(String::from("修改成功"))
+                    } else {
+                      DResult::failure(String::from("修改失败"))
+                    }
                 }
             }
         }else{
@@ -221,7 +209,7 @@ impl LayerUser {
                 _=>false,
             };
             if is_in{
-               return DResult{code:0,value:String::from("该账户或手机号已经存在")};
+               return DResult::failure(String::from("该账户或手机号已经存在"));
             }
 
             let command_text = format!(
@@ -233,11 +221,14 @@ impl LayerUser {
             match rt {
                 Err(e) => {
                     println!("add failed {}", e.to_string());
-                    DResult{code:0,value:String::from("添加异常")}
-                }
+                    DResult::error(String::from("添加异常"))
+                },
                 Ok(rt) => {
-                    if rt > 0 {   DResult{code:200,value:String::from("添加成功")}
-                    } else {  DResult{code:0,value:String::from("添加失败")}}
+                    if rt > 0 {
+                           DResult::success(String::from("添加成功"))
+                        }else {
+                          DResult::failure(String::from("添加失败"))
+                    }
                 }
             }
         }

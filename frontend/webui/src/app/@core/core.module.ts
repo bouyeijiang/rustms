@@ -10,7 +10,6 @@ import { throwIfAlreadyLoaded } from './module-import-guard';
 import { AuthService } from './services/auth.service';
 import { PersonalizeService } from './services/personalize.service';
 import { CustomThemeService } from './services/custom-theme.service';
-//import { MockDataModule } from './mock/mock-data.module';
 import { AuthGuardService } from './services/auth-guard-service.guard';
 import { SysUserService } from './services/sysuser.service';
 import { SysDeptService } from './services/sysdept.service';

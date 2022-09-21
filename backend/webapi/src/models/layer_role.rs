@@ -41,23 +41,12 @@ impl LayerRole{
             let rt = PgLink::db_query(&mut cfg, &command_text).await.unwrap();
             let list = SysRole::from_vec(rt);
 
-           return PResult {
-                value: list,
-                total:_total,
-                message:String::from(""),
-                code: 200,
-            };
+           return PResult::success(list, _total);
         }
 
         let empty:Vec<SysRole>=Vec::new();
 
-        PResult {
-            value: empty,
-            code: 0,
-            message:String::from("无数据"),
-            total: 0,
-        }
-
+        PResult::failure(empty, String::from("无数据"))
     }
 
     //修改或更新

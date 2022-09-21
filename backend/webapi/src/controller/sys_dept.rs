@@ -45,24 +45,15 @@ pub async fn get_dept_byid(data: web::Query<HashMap<String, String>>) -> impl Re
     let id = data.get("id").unwrap_or(&def);
 
     if id.len()<32{
-        return web::Json(DResult{
-            value:SysDept::new(""),
-            code:0
-        });
+        return web::Json(DResult::failure(SysDept::new("")));
     }
 
     let usr = LayerDept::get_by(id).await;
     if usr.id.len()<=0{
-       return web::Json(DResult {
-            value: usr,
-            code: 0,
-        });
+       return web::Json(DResult::failure(usr));
     }
 
-    web::Json(DResult {
-        value: usr,
-        code: 200,
-    })
+    web::Json(DResult::success(usr))
 }
 
 #[get("/pri/dept/delete_by_id")]
@@ -71,10 +62,7 @@ pub async fn delete_dept_byid(data: web::Query<HashMap<String, String>>)->impl R
     let id = data.get("id").unwrap_or(&def);
 
     if id.len()<=0{
-        return web::Json(DResult {
-            value:String::from("编号为空"),
-            code: 0,
-        });
+        return web::Json(DResult::failure(String::from("编号为空")));
     }
 
     let rt = LayerDept::delete_by(id).await;

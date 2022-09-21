@@ -33,24 +33,15 @@ pub async fn get_user_by_id(data: web::Query<HashMap<String, String>>) -> impl R
 
     let uid = data.get("id").unwrap_or(&def);
     if uid.len()<32{
-        return web::Json(DResult{
-            value:SysUser::new(),
-            code:0
-        });
+        return web::Json(DResult::failure(SysUser::new()));
     }
 
     let usr = LayerUser::get_by(uid).await;
     if usr.id.len()<=0{
-       return web::Json(DResult {
-            value: usr,
-            code: 0,
-        });
+       return web::Json(DResult::failure(usr));
     }
 
-    web::Json(DResult {
-        value: usr,
-        code: 200,
-    })
+    web::Json(DResult::success(usr))
 }
 
 #[get("/pri/user/delete_by_id")]
@@ -59,22 +50,13 @@ pub async fn delete_user_byid(data: web::Query<HashMap<String, String>>)->impl R
     let id = data.get("id").unwrap_or(&def);
 
     if id.len()<=0{
-        return web::Json(DResult {
-            value: "编号为空",
-            code: 0,
-        });
+        return web::Json(DResult::failure("编号为空"));
     }
 
     let is_ok = LayerUser::delete_by(id).await;
     if is_ok{
-       return web::Json(DResult {
-            value: "删除成功",
-            code: 200,
-        });
+       return web::Json(DResult::success("删除成功"));
     }
 
-    web::Json(DResult {
-        value: "删除失败",
-        code: 0,
-    })
+    web::Json(DResult::failure("删除失败"))
 }

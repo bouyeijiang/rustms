@@ -4,7 +4,7 @@ export default {
     loginWays: {
       account: '账号密码登录',
     },
-    submit: '提交',
+    submit: '登录',
     userName: '账户',
     password: '密码',
     noticeMessage: {

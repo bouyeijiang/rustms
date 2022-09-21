@@ -13,4 +13,22 @@ impl <T:serde::Serialize> PResult<T>{
     pub fn to_json(&self)->String{
         serde_json::to_string(self).unwrap()
     }
+
+    pub fn success(value:T,total:i64)->PResult<T>{
+        PResult{
+            code:200,
+            total:total,
+            value:value,
+            message:String::from("")
+        }
+    }
+
+    pub fn failure(value:T,message:String)->PResult<T>{
+        PResult{
+            code:0,
+            total:0,
+            value:value,
+            message:message
+        }
+    }
 }

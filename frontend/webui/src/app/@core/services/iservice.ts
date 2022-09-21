@@ -1,5 +1,3 @@
-import { Observable } from "rxjs";
-
 export interface ListPager {
     total?: number,
     pageSize?: number;

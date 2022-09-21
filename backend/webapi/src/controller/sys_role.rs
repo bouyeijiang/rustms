@@ -32,24 +32,15 @@ pub async fn get_role_byid(data: web::Query<HashMap<String, String>>) -> impl Re
     let id = data.get("id").unwrap_or(&def);
 
     if id.len()<32{
-        return web::Json(DResult{
-            value:SysRole::new(),
-            code:0
-        });
+        return web::Json(DResult::success(SysRole::new()));
     }
 
     let usr = LayerRole::get_by(id).await;
     if usr.id.len()<=0{
-       return web::Json(DResult {
-            value: usr,
-            code: 0,
-        });
+       return web::Json(DResult::failure(usr));
     }
 
-    web::Json(DResult {
-        value: usr,
-        code: 200,
-    })
+    web::Json(DResult::success(usr))
 }
 
 #[get("/pri/role/get_rigth_by_id")]
@@ -58,16 +49,11 @@ pub async fn get_rigth_byid(data: web::Query<HashMap<String, String>>)->impl Res
     let id = data.get("role_id").unwrap_or(&def);
 
     if id.len()<32{
-        return web::Json(DResult{
-            value:vec![],
-            code:0
-        });
+        return web::Json(DResult::failure(vec![]));
     }
     let ls = LayerRole::get_right_by(id).await;
-    web::Json(DResult {
-        value: ls,
-        code: 200,
-    })
+
+    web::Json(DResult::success(ls))
 }
 
 #[get("/pri/role/delete_by_id")]
@@ -76,10 +62,7 @@ pub async fn delete_role_byid(data: web::Query<HashMap<String, String>>)->impl R
     let id = data.get("id").unwrap_or(&def);
 
     if id.len()<=0{
-        return web::Json(DResult {
-            value:String::from("编号为空"),
-            code: 0,
-        });
+        return web::Json(DResult::failure(String::from("编号为空")));
     }
 
     let rt = LayerRole::delete_by(id).await;

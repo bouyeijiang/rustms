@@ -1,4 +1,3 @@
-//use actix_files::NamedFile;
 use actix_web::error;
 use actix_cors::Cors;
 use actix_web::{dev::Service as _, App, HttpServer,http::header};
@@ -24,7 +23,6 @@ async fn main() -> std::io::Result<()> {
     println!("listening:{}", url);
      
     HttpServer::new(|| {
-
         let cors= Cors::default()
         .allow_any_origin()
         .allowed_methods(vec!["GET", "POST","OPTIONS"])
@@ -37,8 +35,8 @@ async fn main() -> std::io::Result<()> {
         .configure(config)
         .wrap_fn(|req, srv| {
             let reqpath = req.path().to_string();
-            // println!("{:?}",req);
             let headers = req.headers().clone();
+
             let fut = srv.call(req);
             async move {
                 let res = fut.await?;
@@ -47,8 +45,8 @@ async fn main() -> std::io::Result<()> {
                 }
 
                 let def = header::HeaderValue::from_str("").unwrap();
-                let token = headers.get("Authorization").unwrap_or(&def)
-                .to_str().ok().unwrap().replace("Bearer ", "");
+                 let token = headers.get("Authorization").unwrap_or(&def)
+                 .to_str().ok().unwrap().replace("Bearer ", "");
 
                 if token.len() == 0 {
                     let rt=r#"{"value":"Invalid Token","code":401}"#;
@@ -59,7 +57,6 @@ async fn main() -> std::io::Result<()> {
                 let is_ok = val_token.1;
 
                 if is_ok { Ok(res)} else {
-                    // println!("{:?}",headers);
                     println!("{:?}", val_token.0);
                      let rt=r#"{"value":"ErrorUnauthorized","code":401}"#;
                      let err=error::ErrorUnauthorized(rt);
