@@ -1,15 +1,15 @@
-use actix_web::error;
 use actix_cors::Cors;
-use actix_web::{dev::Service as _, App, HttpServer,http::header};
-use dblink::Settings;
+use actix_web::{error,dev::Service as _, App, HttpServer,http::header};
+use dblink::{Settings,Dbcfg};
+
 pub mod config;
 mod controller;
 mod jwttoken;
 mod models;
 mod utils;
-use crate::{jwttoken::*};
 use config::*;
-use dblink::Dbcfg;
+
+use crate::{jwttoken::*};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -20,6 +20,9 @@ async fn main() -> std::io::Result<()> {
     let setting=Settings::get_globalcfg();
     let url = setting.listen;
 
+    println!("------------------");
+    println!("------rustms------");
+    println!("------------------");
     println!("listening:{}", url);
      
     HttpServer::new(|| {
@@ -57,7 +60,9 @@ async fn main() -> std::io::Result<()> {
                 let is_ok = val_token.1;
 
                 if is_ok { Ok(res)} else {
-                    println!("{:?}", val_token.0);
+                    println!("token:{}", token);
+                    println!("err:{:?}", val_token.0);
+
                      let rt=r#"{"value":"ErrorUnauthorized","code":401}"#;
                      let err=error::ErrorUnauthorized(rt);
                      Err(error::ErrorUnauthorized(err))

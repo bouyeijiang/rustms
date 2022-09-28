@@ -1,24 +1,21 @@
-mod result_data;
-pub use result_data::DResult;
-mod dto_login;
-pub use dto_login::DtoLogin;
-mod sysuser;
-pub use sysuser::SysUser;
-mod sysdept;
-pub use sysdept::SysDept;
-mod sysrole;
-pub use sysrole::SysRole;
-mod sysmenu;
-pub use sysmenu::SysMenu;
-mod sysright;
-pub use sysright::SysRight;
-mod result_page;
-pub use result_page::PResult;
-mod result_token;
-pub use result_token::TokenResult;
-mod dto_portal_pie;
-pub use dto_portal_pie::DtoPortalPie;
-mod treenode_menu;
-pub use treenode_menu::TreeNodeMenu;
-mod treenode_dept;
-pub use treenode_dept::TreeNodeDept;
+pub mod result_data;
+pub mod dto_login;
+pub mod sysuser;
+pub mod sysdept;
+pub mod sysrole;
+pub mod sysmenu;
+pub mod sysright;
+pub mod result_page;
+pub mod result_token;
+pub mod dto_portal_pie;
+pub mod treenode_menu;
+pub mod treenode_dept;
+
+pub use self::{
+    treenode_dept::*,treenode_menu::*,
+    dto_portal_pie::*,result_token::*,
+    result_page::*,sysright::*,
+    sysmenu::*,sysrole::*,
+    sysdept::*,sysuser::*,
+    dto_login::*,result_data::*
+};

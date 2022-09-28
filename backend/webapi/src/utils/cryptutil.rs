@@ -2,14 +2,10 @@ extern crate crypto;
 extern crate rustc_hex;
 
 use std::str;
-use crypto::digest::Digest;
-use crypto::md5::Md5;
-use crypto::sha1::Sha1;
-use crypto::sha3::Sha3;
+use crypto::{md5::Md5,sha1::Sha1,sha3::Sha3,digest::Digest};
 use crypto::{ symmetriccipher, buffer, aes, blockmodes };
 use crypto::buffer::{ ReadBuffer, WriteBuffer, BufferResult };
 use rustc_hex::{ToHex, FromHex};
-//use rustc_hex::{ToHex,FromHex};
 
 pub struct CryptoUtil{}
 

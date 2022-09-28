@@ -1,8 +1,8 @@
-use crate::controller::sys_auth::*;
-use crate::controller::sys_user::*;
-use crate::controller::sys_dept::*;
-use crate::controller::sys_menu::*;
-use crate::controller::sys_role::*;
+use crate::controller::{
+    sys_auth::*,sys_user::*,
+    sys_dept::*,sys_menu::*,sys_role::*
+};
+
 use actix_files as fs;
 use actix_web::{web,get,Result};
 use actix_files::NamedFile;
