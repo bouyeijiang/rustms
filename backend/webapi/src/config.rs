@@ -2,9 +2,10 @@ use crate::controller::{
     sys_auth::*,sys_user::*,
     sys_dept::*,sys_menu::*,sys_role::*
 };
+use entities::*;
 
 use actix_files as fs;
-use actix_web::{web,get,Result};
+use actix_web::{web,get,Result,Responder,HttpRequest,HttpResponse,http::header,Either,guard};
 use actix_files::NamedFile;
 use std::path::PathBuf;
 
@@ -41,9 +42,10 @@ pub fn config(cfg: &mut web::ServiceConfig) {
         .service(get_role_byid)
         .service(index)
 
-        .service(fs::Files::new("/statics", "resources/statics/").prefer_utf8(true))
-        .service(fs::Files::new("/assets", "resources/pages/assets/").prefer_utf8(true))
-        .service(fs::Files::new("/", "resources/pages/").prefer_utf8(true));
+        .service(fs::Files::new("/statics", "resources/statics/").show_files_listing())
+        .service(fs::Files::new("/assets", "resources/pages/assets/").show_files_listing())
+        .service(fs::Files::new("/", "resources/pages/").prefer_utf8(true))
+        .default_service(web::route().guard(guard::Get()).guard(guard::Post()).to(not_found));
 }
 
 //配置静态页面的默认首页
@@ -51,4 +53,36 @@ pub fn config(cfg: &mut web::ServiceConfig) {
 pub async fn index()->Result<NamedFile>{
     let path=PathBuf::from("resources/pages/index.html");
     Ok(NamedFile::open(path)?)
+}
+
+pub async fn not_found(req:HttpRequest)->Either<NamedFile,impl Responder>{
+    let def = header::HeaderValue::from_str("").unwrap();
+    let content_type=req.headers().get("content-type").unwrap_or(&def).to_str().ok();
+    
+    match content_type{
+        Some(val)=>{
+
+            if val.eq_ignore_ascii_case("application/json") ||
+            val.eq_ignore_ascii_case("multipart/form-data"){
+               Either::Right(HttpResponse::NotFound()
+                .content_type("application/json")
+                .json(DResult::not_found("Not found method")))
+            }else{
+                let path = "resources/pages/index.html";
+                let fs=NamedFile::open(path);
+                match fs{
+                    Ok(val)=>{
+                        Either::Left(val)
+                    },_error=>{
+                       Either::Right(HttpResponse::NotFound().body("Not found request page"))
+                    }
+                }
+               
+               //HttpResponse::NotFound().body("Not found request page")
+            }
+        },
+        _=>{
+           Either::Right(HttpResponse::BadGateway().body("An error occurred"))
+        }
+    } 
 }

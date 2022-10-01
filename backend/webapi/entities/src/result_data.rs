@@ -43,6 +43,19 @@ impl <T:serde::Serialize> DResult<T>{
             value:value
         }
     }
+
+    pub fn create(value:T,code:i16)->DResult<T>{
+        DResult{
+            code:code,
+            value:value
+        }
+    }
+    pub fn not_found(value:T)->DResult<T>{
+        DResult{
+            code:404,
+            value:value
+        }
+    }
     pub fn unauthorized(value:T)->DResult<T>{
         DResult{
             code:401,
