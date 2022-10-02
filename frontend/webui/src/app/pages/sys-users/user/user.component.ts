@@ -143,7 +143,7 @@ export class UserComponent implements OnInit {
     }
 
     showToast(type, msg) {
-        const results = this.toastService.open({
+        this.toastService.open({
             value: [{ severity: type, summary: '提示', content: msg }],
         });
     }

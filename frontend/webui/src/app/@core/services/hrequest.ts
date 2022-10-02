@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { HttpParam } from "src/config/setting";
-import { AuthService } from "./auth.service";
 
 @Injectable()
 export class HRequest {
@@ -20,7 +19,7 @@ export class HRequest {
 
        return this.http.post(HttpParam.url + method, data, httpOptions)
             .subscribe((result: any) => {
-                if(result.code===401){
+                if(result.code===401||result.code===403){
                     this.clearSession();
                     this.route.navigate(['/', 'login']);
                     return;
@@ -29,14 +28,14 @@ export class HRequest {
                 callbakfun(result);
             }, error => {
                 console.log(error);
-                if(error.status===401){
+                if(error.status===401|| error.status===403){
                     this.clearSession();
                     this.route.navigate(['/', 'login']);
                     return;
                 }
 
                 callbakfun({
-                    code: 500,
+                    code: error.status,
                     value:'发生错误:'+error.statusText
                 })
             })
@@ -70,7 +69,7 @@ export class HRequest {
        return this.http.get(uri, httpOptions)
             .subscribe((result:any) => {
 
-                if(result.code===401){
+                if(result.code===401 || result.code===403){
                     this.clearSession();
                     this.route.navigate(['/', 'login']);
                     return;
@@ -79,14 +78,14 @@ export class HRequest {
             }, error => {
                 console.log(error);
 
-                if(error.status===401){
+                if(error.status===401|| error.status===403){
                     this.clearSession();
                     this.route.navigate(['/', 'login']);
                     return;
                 }
 
                 callbakfun({
-                    code: 500,
+                    code: error.status,
                     value: '发生错误:'+error.statusText
                 })
             })
