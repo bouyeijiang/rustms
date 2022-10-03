@@ -1,8 +1,7 @@
 use crate::jwttoken::*;
-use dblink::Dbcfg;
-use dblink::pglink::*;
+use dblink::{Dbcfg,Settings,pglink::*};
 use entities::*;
-use actix_web::{web};
+use actix_web::{web,HttpRequest};
 use crate::utils::{webutil::*,cryptutil::*};
 use std::collections::HashMap;
 
@@ -17,18 +16,26 @@ pub struct DefError {
 
 impl LayerUser {
     //获取用户列表
-    pub async fn get_list(data: web::Query<HashMap<String, String>>) -> PResult<Vec<SysUser>> {
+    pub async fn get_list(req:&HttpRequest,data: web::Query<HashMap<String, String>>) -> PResult<Vec<SysUser>> {
+        let token=WebUtil::get_token_from_header(req);
+        if token.1==false{
+            let empty:Vec<SysUser>=Vec::new();
+            return PResult::unauthorized(empty, String::from("登录验证失效"));
+        }
+
         let def: String = "".to_owned();
         let uname = data.get("uname").unwrap_or(&def);
         let phone = data.get("phone").unwrap_or(&def);
+        let claims=token.0;
 
-        let mut wherestr=String::from(" where 1=1");
-        if uname.len() > 0 {
-            let s = format!(" and uname like '{}%'", uname);
-            wherestr.push_str(&s);
+        let mut wherestr=String::from("where 1=1");
+        //管理员具备所有权限
+        if claims.id!="00000000-0000-0000-0000-000000000000"{
+           wherestr= format!(" where dept_id in(select relate_id from sys_right where role_id='{}' group by relate_id)",claims.data_role_id);
         }
-        if phone.len() > 0 {
-            let s = format!(" and phone like '{}%'", uname);
+
+        if uname.len() > 0 || phone.len()>0{
+            let s = format!(" and (uname like '{}%' or phone like '{}%')", uname,phone);
             wherestr.push_str(&s);
         }
         let mut cfg = Dbcfg::get_globalcfg();
@@ -112,12 +119,17 @@ impl LayerUser {
                 let _item = SysUser::from(item);
                 let uname: String = _item.uname.clone();
                 let id: String = _item.id.clone();
+             
+                let mut token_claims = Claims::new(&id, &uname,&_item.data_role_id,&_item.dept_id);
 
-                let mut token_claims = Claims::new(&id, &uname);
-                let token = token_claims.create_token(7200);
+                //println!("{:?}",token_claims);
+
+                let setting=Settings::get_globalcfg();
+
+                let token = token_claims.create_token(setting.expired);
                 Ok(TokenResult{
                     token:token,
-                    expired:7200,
+                    expired:setting.expired,
                     user_info:_item
                 })
             }

@@ -2,17 +2,29 @@ use dblink::Dbcfg;
 use dblink::pglink::*;
 use entities::*;
 use crate::utils::{webutil::*};
-use actix_web::{web};
+use actix_web::{web,HttpRequest};
 use std::collections::HashMap;
 
 
 pub struct LayerDept{}
 impl LayerDept{
 
-    pub async fn get_list(data: web::Query<HashMap<String, String>>)->PResult<Vec<SysDept>>{
+    pub async fn get_list(req:&HttpRequest,data: web::Query<HashMap<String, String>>)->PResult<Vec<SysDept>>{
         let mut cfg = Dbcfg::get_globalcfg();
 
-        let exist_str=format!("select count(*) from sys_dept");
+        let token=WebUtil::get_token_from_header(req);
+        if token.1==false{
+            let empty:Vec<SysDept>=Vec::new();
+            return PResult::unauthorized(empty, String::from("登录验证失效"));
+        }
+
+        let claims=token.0;
+        let mut wherestr=String::from("where 1=1");
+        //管理员具备所有权限
+        if claims.id!="00000000-0000-0000-0000-000000000000"{
+           wherestr= format!(" where id in(select relate_id from sys_right where role_id='{}' group by relate_id)",claims.data_role_id);
+        }
+        let exist_str=format!("select count(*) from sys_dept {}",wherestr);
         let exist=PgLink::db_query_one(&mut cfg,&exist_str).await;
         let _total= match exist {
             Ok(rt)=>{
@@ -26,8 +38,8 @@ impl LayerDept{
             let page = p.0;
             let size = p.1;
             
-            let command_text = format!("select cast(id as varchar) as id,dept,cast(pid as varchar) as pid,dindex from sys_dept order by gentime,dindex desc limit {} offset {}",
-           size,size*page);
+            let command_text = format!("select cast(id as varchar) as id,dept,cast(pid as varchar) as pid,dindex from sys_dept {} order by gentime,dindex desc limit {} offset {}",
+            wherestr,size,size*page);
 
             let rt = PgLink::db_query(&mut cfg, &command_text).await.unwrap();
             let list = SysDept::from_vec(rt);
@@ -40,12 +52,25 @@ impl LayerDept{
         PResult::failure(empty, String::from("无数据"))
     }
 
-    pub async fn get_list_by_parent(parentid:&str)->Vec<SysDept>{
+    pub async fn get_list_by_parent(req:&HttpRequest,parentid:&str)->Vec<SysDept>{
+        let token=WebUtil::get_token_from_header(req);
+        if token.1==false{
+             println!("{:?}",token.0);
+            return Vec::new();
+        }
+
+        let claims=token.0;
+        let mut wherestr=String::from("1=1");
+        //管理员具备所有权限
+        if claims.id!="00000000-0000-0000-0000-000000000000"{
+           wherestr= format!("cte.id in(select relate_id from sys_right where role_id='{}')",claims.data_role_id);
+        }
+
         let command_text=format!("with recursive cte as (
             select id,dept,pid from sys_dept where dept='{}'
             union all 
-            select org.id,org.dept,org.pid from sys_dept org,cte where org.pid =cte.id
-            )select cast(id as varchar) as id,dept,cast(pid as varchar) as pid from cte",parentid);
+            select org.id,org.dept,org.pid from sys_dept org,cte where org.pid =cte.id and {}
+            )select cast(id as varchar) as id,dept,cast(pid as varchar) as pid from cte",parentid,wherestr);
 
             let mut cfg = Dbcfg::get_globalcfg();
 
@@ -55,14 +80,27 @@ impl LayerDept{
             list
     }
 
-    pub async fn get_list_tree()->DResult<TreeNodeDept>{
+    pub async fn get_list_tree(req:&HttpRequest)->DResult<TreeNodeDept>{
         let mut cfg = Dbcfg::get_globalcfg();
  
+        let token=WebUtil::get_token_from_header(req);
+        if token.1==false{
+             println!("{:?}",token.0);
+            return DResult::empty(TreeNodeDept::new(SysDept::new("总部")));
+        }
+
+        let claims=token.0;
+        let mut wherestr=String::from("1=1");
+        //管理员具备所有权限
+        if claims.id!="00000000-0000-0000-0000-000000000000"{
+           wherestr= format!("cte.id in(select relate_id from sys_right where role_id='{}')",claims.data_role_id);
+        }
+
         let command_text = format!("with recursive cte as (
             select * from sys_dept where pid='00000000-0000-0000-0000-000000000000'
             union all 
-            select dt.* from sys_dept dt,cte where dt.pid =cte.id
-            )select cast(id as varchar) as id,dept,cast(pid as varchar) as pid,dindex from cte order by dindex");
+            select dt.* from sys_dept dt,cte where dt.pid =cte.id and {}
+            )select cast(id as varchar) as id,dept,cast(pid as varchar) as pid,dindex from cte order by dindex",wherestr);
 
         let rt = PgLink::db_query(&mut cfg, &command_text).await.unwrap();
         let list = SysDept::from_vec(rt);

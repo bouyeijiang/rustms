@@ -1,12 +1,15 @@
 use std::collections::HashMap;
 
 use crate::models::layer_user::LayerUser;
-use actix_web::{get, post, web,Responder};
+use actix_web::{get, post, web,Responder,HttpRequest};
 use entities::*;
 
 #[get("/pri/user/get_list")]
-pub async fn get_user_list(data: web::Query<HashMap<String, String>>) -> impl Responder {
-    let list = LayerUser::get_list(data).await;
+pub async fn get_user_list(req:HttpRequest,data: web::Query<HashMap<String, String>>) -> impl Responder {
+
+    //println!("{:?}",req.headers());
+
+    let list = LayerUser::get_list(&req,data).await;
 
     web::Json(list)
 }

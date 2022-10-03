@@ -38,31 +38,33 @@ async fn main() -> std::io::Result<()> {
         .configure(config)
         .wrap_fn(|req, srv| {
             let reqpath = req.path().to_string();
-            let headers = req.headers().clone();
+            let mut is_valid_token=true;
+ 
+            //私有方法验证token
+            if reqpath.starts_with("/pri/"){
+                let headers = req.headers();
+                let def = header::HeaderValue::from_str("").unwrap();
+                let token = headers.get("Authorization").unwrap_or(&def)
+                .to_str().ok().unwrap().replace("Bearer ", "");
+    
+                if token.len() == 0 {
+                     is_valid_token=false;
+                }else{
+                    let token_claims = Claims::new("", "","","");
+                    let val_token = token_claims.valiate_token(&token);
+                    is_valid_token = val_token.1;
+
+                    if !is_valid_token{
+                        println!("token:{}", token);
+                        println!("err:{:?}", val_token.0);
+                    }
+                }
+            }
 
             let fut = srv.call(req);
             async move {
                 let res = fut.await?;
-                if !reqpath.starts_with("/pri/") {
-                    return Ok(res);
-                }
-
-                let def = header::HeaderValue::from_str("").unwrap();
-                 let token = headers.get("Authorization").unwrap_or(&def)
-                 .to_str().ok().unwrap().replace("Bearer ", "");
-
-                if token.len() == 0 {
-                    let rt=r#"{"value":"Invalid Token","code":401}"#;
-                    return Err(error::ErrorUnauthorized(rt));
-                }
-                let token_claims = Claims::new("", "");
-                let val_token = token_claims.valiate_token(&token);
-                let is_ok = val_token.1;
-
-                if is_ok { Ok(res)} else {
-                    println!("token:{}", token);
-                    println!("err:{:?}", val_token.0);
-
+                if is_valid_token { Ok(res)} else {
                      let rt=r#"{"value":"ErrorUnauthorized","code":401}"#;
                      let err=error::ErrorUnauthorized(rt);
                      Err(error::ErrorUnauthorized(err))

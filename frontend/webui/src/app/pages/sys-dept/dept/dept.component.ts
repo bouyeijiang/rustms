@@ -226,7 +226,6 @@ export class DeptComponent implements OnInit {
     }
 
     editRow(row: any, index: number) { 
-        console.log(row);
         this.onAddOrUpdate(row,"edit");
     }
 

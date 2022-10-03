@@ -1,27 +1,27 @@
 use std::collections::HashMap;
 use crate::models::layer_dept::LayerDept;
-use actix_web::{get, post, web,Responder};
+use actix_web::{get, post, web,Responder,HttpRequest};
 use entities::*;
 
 #[get("/pri/dept/get_list")]
-pub async fn get_dept_list(data: web::Query<HashMap<String, String>>) -> impl Responder {
-    let list = LayerDept::get_list(data).await;
+pub async fn get_dept_list(req:HttpRequest,data: web::Query<HashMap<String, String>>) -> impl Responder {
+    let list = LayerDept::get_list(&req,data).await;
 
     web::Json(list)
 }
 
 #[get("/pri/dept/get_list_tree")]
-pub async fn get_list_tree()->impl Responder{
-    let list = LayerDept::get_list_tree().await;
+pub async fn get_list_tree(req:HttpRequest)->impl Responder{
+    let list = LayerDept::get_list_tree(&req).await;
     web::Json(list)
 }
 
 #[get("/pri/dept/get_list_by_parent")]
-pub async fn get_dept_list_byparent(data: web::Query<HashMap<String, String>>)->impl Responder{
+pub async fn get_dept_list_byparent(req:HttpRequest,data: web::Query<HashMap<String, String>>)->impl Responder{
     let def="00000000-0000-0000-0000-000000000000".to_owned();
     let parentid = data.get("pid").unwrap_or(&def);
 
-    let result = LayerDept::get_list_by_parent(parentid).await;
+    let result = LayerDept::get_list_by_parent(&req,parentid).await;
     web::Json(result)
 }
 

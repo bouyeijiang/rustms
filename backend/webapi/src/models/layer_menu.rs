@@ -31,7 +31,6 @@ impl LayerMenu{
         let r=*tree.unwrap();
         DResult::success(r)
     }
-
     //修改或更新部门
     pub async fn add_or_update(act:&str,id:&str,menu_name:&str,menu_uri:&str,icon:&str,menu_type:i16,pid:&str)->DResult<String>{
         let mut cfg = Dbcfg::get_globalcfg();
@@ -142,7 +141,6 @@ impl LayerMenu{
             DResult::failure(String::from("删除失败"))
         }
     }
-
     //用户菜单角色过滤
     pub async fn get_list_by_userid(user_id:&str)->DResult<TreeNodeMenu>{
         let mut cfg = Dbcfg::get_globalcfg();

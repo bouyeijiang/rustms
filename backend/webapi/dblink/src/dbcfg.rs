@@ -7,7 +7,7 @@ pub struct Dbcfg {
     pub port: i16,
     pub usr: String,
     pub pwd: String,
-    pub database: String,
+    pub database: String
 }
 
 static mut APPCFG:Option<&Dbcfg>=None;
@@ -32,7 +32,7 @@ impl Dbcfg {
 
     pub fn init_globalcfg(){
         let mut cfg=Dbcfg::new();
-        cfg.from_config("conf/settings.json");
+        cfg.from_config("conf/settings_dev.json");
 
         let tmp=Box::new(cfg);
        unsafe{
@@ -63,6 +63,7 @@ impl Dbcfg {
         let db=val["database"].as_str().unwrap_or("postgres").to_string();
 
         self.database=db;
+
         self.ip=ip;
         self.usr=usr;
         self.pwd=pwd;

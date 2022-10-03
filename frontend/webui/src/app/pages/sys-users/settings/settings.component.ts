@@ -50,8 +50,6 @@ export class SettingsComponent implements OnInit {
     }
 
     onSave(){
-        console.log(this.formData);
-
         if(this.formData.id===''){
             this.showToast('warning','获取用户信息失败,请重新登录');
             return;

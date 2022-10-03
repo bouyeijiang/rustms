@@ -119,6 +119,8 @@ export class LoginComponent implements OnInit {
             this.islogining=false;
             this.waittingRt.loadingInstance.close();
 
+            console.log(res);
+
               if(res.code===200){
                 this.authService.setSession(res.value);
                 this.router.navigate(['/']);
@@ -130,8 +132,10 @@ export class LoginComponent implements OnInit {
               this.islogining=false;
               console.log(error);
               this.waittingRt.loadingInstance.close();
-              this.authService.logout();
               this.showToast('error',error.statusText);
+              if (error.status===401 ||error.status===403){
+                this.authService.logout();
+              }
             }
           );
         break;

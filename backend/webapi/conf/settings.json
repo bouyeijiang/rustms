@@ -1,5 +1,6 @@
 {
     "listen": "0.0.0.0:8088",
+    "expired":7200,
     "postgres": {
         "ip": "localhost",
         "port": 5432,

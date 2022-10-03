@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
 use crate::models::layer_role::LayerRole;
-use actix_web::{get, post, web,Responder};
+use actix_web::{get, post, web,Responder,HttpRequest};
 use entities::*;
 
 #[get("/pri/role/get_list")]
-pub async fn get_role_list(data: web::Query<HashMap<String, String>>) -> impl Responder {
-    let list = LayerRole::get_list(data).await;
+pub async fn get_role_list(req:HttpRequest,data: web::Query<HashMap<String, String>>) -> impl Responder {
+    let list = LayerRole::get_list(&req,data).await;
 
     web::Json(list)
 }
@@ -35,7 +35,7 @@ pub async fn get_role_byid(data: web::Query<HashMap<String, String>>) -> impl Re
         return web::Json(DResult::success(SysRole::new()));
     }
 
-    let usr = LayerRole::get_by(id).await;
+    let usr = LayerRole::get_role_by(id).await;
     if usr.id.len()<=0{
        return web::Json(DResult::failure(usr));
     }

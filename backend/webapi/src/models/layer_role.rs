@@ -1,7 +1,7 @@
 use dblink::Dbcfg;
 use dblink::pglink::*;
 use entities::*;
-use actix_web::{web};
+use actix_web::{web,HttpRequest};
 use crate::utils::{webutil::*};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -16,11 +16,11 @@ pub struct RightValue{
 
 impl LayerRole{
 
-    pub async fn get_list(data: web::Query<HashMap<String, String>>)->PResult<Vec<SysRole>>{
+    pub async fn get_list(_req:&HttpRequest,data: web::Query<HashMap<String, String>>)->PResult<Vec<SysRole>>{
         let mut cfg = Dbcfg::get_globalcfg();
         let def: String = "".to_owned();
         let role_name = data.get("role_name").unwrap_or(&def);
-
+ 
         let exist_str=format!("select count(*) from sys_role where role_name like '%{}%'",role_name);
         let exist=PgLink::db_query_one(&mut cfg,&exist_str).await;
         let _total= match exist {
@@ -132,7 +132,7 @@ impl LayerRole{
         }
     }
  
-    pub async fn get_by(id: &str) -> SysRole {
+    pub async fn get_role_by(id: &str) -> SysRole {
         let mut cfg = Dbcfg::get_globalcfg();
         let command_text = format!("select * from sys_role where id='{}'", id);
 
@@ -149,6 +149,7 @@ impl LayerRole{
 
     pub async fn get_right_by(role_id:&str)->Vec<SysRight>{
         let mut cfg = Dbcfg::get_globalcfg();
+
         let command_text = format!("select cast(id as varchar) as id,cast(role_id as varchar) as role_id,
         cast(relate_id as varchar) as relate_id,right_value from sys_right where role_id='{}'", role_id);
 

@@ -3,13 +3,16 @@ use chrono::Duration as Durationx;
 
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct Claims {
-    pub aud: String,
-    pub exp: i64,
-    pub issued: i64,
-    pub issuer: String,
-    pub sub: String,
+    //pub aud: String,//接收者，观众
+    pub exp: i64,//过期时间
+    pub issued: i64,//发布时间
+    pub issuer: String,//签发者
+    pub sub: String,//主题
+    pub id:String,//携带用户编号
+    pub data_role_id:String,//携带用户角色编号
+    pub dept_id:String//携带用户部门编号
 }
 
 static mut PRIVATEKEY: Option<&EncodingKey> = None;
@@ -48,13 +51,16 @@ impl Claims {
         }
     }
 
-    pub fn new(_issuer: &str, _sub: &str) -> Claims {
+    pub fn new(id: &str, _title: &str,role_id:&str,dep_id:&str) -> Claims {
         Claims {
-            aud: "bouyei".to_owned(),
+           // aud: _aud.to_owned(),
             exp: 60,
             issued: 60,
-            issuer: _issuer.to_owned(),
-            sub: _sub.to_owned(),
+            issuer:"bouyei.rustms".to_owned(),
+            sub: _title.to_owned(),
+            id:id.to_owned(),
+            data_role_id:role_id.to_owned(),
+            dept_id:dep_id.to_owned()
         }
     }
 
@@ -83,7 +89,7 @@ impl Claims {
             }
             _error => {
                 println!("{:?}", _error);
-                let def = Claims::new("", "");
+                let def = Claims::new("", "","","");
                 (def, false)
             }
         };

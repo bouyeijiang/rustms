@@ -14,6 +14,15 @@ impl <T:serde::Serialize> PResult<T>{
         serde_json::to_string(self).unwrap()
     }
 
+    pub fn unauthorized(value:T,msg:String)->PResult<T>{
+        PResult{
+            code:401,
+            total:0,
+            value:value,
+            message:msg
+        }
+    }
+
     pub fn success(value:T,total:i64)->PResult<T>{
         PResult{
             code:200,

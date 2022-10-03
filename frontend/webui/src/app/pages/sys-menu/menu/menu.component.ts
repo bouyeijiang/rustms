@@ -75,8 +75,6 @@ export class MenuComponent implements OnInit {
  
     activeNode(node) {
       this.operableTree.treeFactory.activeNodeById(node.id);
-      console.log(node);
-      console.log(node.data.isParent);
     }
 
     onLoading(){
@@ -245,7 +243,6 @@ export class MenuComponent implements OnInit {
       });
    }
      addNode(event,node) {
-      console.log(node);
       this.addOrUpdate('add',node);
 
        //if (this.currentSelectedNode) {
@@ -267,8 +264,7 @@ export class MenuComponent implements OnInit {
         this.showToast('info','请先删除字节点');
         return;
       }
-      console.log(node);
-   
+
       this.deleteRow({
         id:node.id
       });
